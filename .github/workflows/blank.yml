@@ -18,7 +18,8 @@ jobs:
         id: set-matrix
         run: |
           echo "Checking for any services with recent changes pushed to main..."
-          changed=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '^services/' | cut -d '/' -f2 | sort -u | jq -R . | jq -s .)
+          changed=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '^services/' | cut -d '/' -f2 | sort -u | jq -R . | jq -cs .)
           
           echo "Service with changes: $changed"
-          printf "matrix=%s\n" "{\"service\":$changed}" >> $GITHUB_OUTPUT
+          echo "matrix={\"service\":$changed}" >> $GITHUB_OUTPUT
+
