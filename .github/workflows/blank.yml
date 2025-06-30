@@ -21,4 +21,4 @@ jobs:
           changed=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '^services/' | cut -d '/' -f2 | sort -u | jq -R . | jq -s .)
           
           echo "Service with changes: $changed"
-          echo "matrix={\"service\":$changed}" | tee -a $GITHUB_OUTPUT
+          printf "matrix=%s\n" "{\"service\":$changed}" >> $GITHUB_OUTPUT
