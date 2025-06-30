@@ -1,0 +1,21 @@
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'services/**'
+
+jobs:
+  detect-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Detect changed services
+        id: set-matrix
+        run: |
+          echo "Checking for any services with recent changes pushed to main..."
+          changed=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '^services/' | cut -d '/' -f2 | sort -u | jq -R . | jq -s .)
+          
+          echo "Service with changes: $changed"
+          echo "matrix={\"service\":$changed}" >> $GITHUB_OUTPUT
